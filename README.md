@@ -71,5 +71,5 @@ This repository contains MATLAB scripts for detecting circular objects in therma
 - For noisy images, adjust sensitivity and edge thresholds in `DetectCirclesInThermalImages.m`.
 
 ---
-**Authors:** Aaron Corcoran, Winnie Liao
+**Authors:** Aaron Corcoran, Winnie Liao   
 **Date:** June 2025
