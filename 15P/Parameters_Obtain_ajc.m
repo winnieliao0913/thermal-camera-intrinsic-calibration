@@ -1,0 +1,69 @@
+clc
+clear
+run World_Points.m;
+%%
+folderPath = 'Result\ResultData'; % Update the file path
+csvFiles = dir(fullfile(folderPath, '*.csv'));
+
+% Initialize an empty 3D array
+%ImagePoints = zeros(165, 2, 10); % Assuming there are 10 files, each containing 165 points
+ImagePoints = zeros(165,2,1); % Appending depending on data quality
+% Read each file and populate the array
+good_frames = 0;
+for k = 1:length(csvFiles)
+    % Get the file name
+    fileName = fullfile(folderPath, csvFiles(k).name);
+    
+    % Read the CSV file, assuming the points are stored in the x and y columns
+    data = readtable(fileName);
+    
+    % Extract the x and y coordinates (assuming they are in the first two columns)
+    points = table2array(data(:, 1:2)); % Extract the first two columns as points
+    
+    % Check the number of points
+    if size(points, 1) ~= 165
+        error('File %s does not contain 165 points.', csvFiles(k).name);
+    end
+    
+    % Sort the image points in "left-to-right, bottom-to-top" order
+    % Convert points to table for sorting
+    %pointsTable = array2table(points, 'VariableNames', {'X', 'Y'});
+    % Sort by Y (ascending), then by X (ascending)
+    %sortedPointsTable = sortrows(pointsTable, {'Y', 'X'});
+    % Convert back to array
+    %sortedPoints = table2array(sortedPointsTable);
+    
+    sortedPoints = reorderCentroids(points(:,1:2), [10,33]);
+    if height(sortedPoints) ~=165
+        continue
+    end
+    good_frames = good_frames +1;
+    % Store the points in the k-th layer of the 3D array
+    ImagePoints(:, :, good_frames) = double(sortedPoints); % Ensure conversion to double type
+
+    % Display the sorted points
+    %disp(ImagePoints(:, :, k));
+    
+    % Display the file name
+    fprintf('Read: %s\n', csvFiles(k).name);
+end
+%%
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+% Check if x and y in Image Points match in World Points
+% Draw worldPoints
+scatter(worldPoints(:, 1), worldPoints(:, 2), 'r');
+title('World Points');
+hold on;
+
+% Draw the first ImagePoints
+scatter(ImagePoints(:, 1, 1), ImagePoints(:, 2, 1), 'b');
+legend('World Points', 'Image Points');
+
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % 
+
+%% Camera Parameter Estimation
+[cameraParams, imagesUsed, estimationErrors] = estimateCameraParameters(ImagePoints, worldPoints);
+showReprojectionErrors(cameraParams);
+figure;
+showExtrinsics(cameraParams);
