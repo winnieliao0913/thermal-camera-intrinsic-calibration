@@ -18,7 +18,7 @@ This repository contains MATLAB scripts for detecting circular objects in therma
 
 - Place all thermal images for calibration in the same folder as the provided MATLAB scripts.
    1. Images should be captured from the same camera.
-   2. Include **6 to 10 images** taken from different angles to ensure calibration accuracy.
+   2. Include **6 to 20 images** taken from different angles to ensure calibration accuracy.
 
 
 ## File Summary
