@@ -67,3 +67,4 @@ legend('World Points', 'Image Points');
 showReprojectionErrors(cameraParams);
 figure;
 showExtrinsics(cameraParams);
+save("cameraParams.mat","cameraParams")

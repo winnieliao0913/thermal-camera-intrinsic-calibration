@@ -71,3 +71,4 @@ end
 showReprojectionErrors(cameraParams);
 figure;
 showExtrinsics(cameraParams);
+save("cameraParams.mat","cameraParams")
